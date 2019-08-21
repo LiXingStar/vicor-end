@@ -144,13 +144,6 @@ class Category extends Controller
     {
         //
     }
-
-    /**
-     * 删除指定资源
-     *
-     * @param int $id
-     * @return \think\Response
-     */
     public function delete($id)
     {
         // api/category/12
