@@ -64,10 +64,12 @@ class Category extends Controller
      */
     public function create()
     {
-        //
-        return json([
-            'code' => 200,
-            'msg' => 'ceate'
+        $result = Db::table('category')->where(['pid'=>0])->order('sort','asc')->select();
+
+        return  json([
+           'code'=>config('code.success'),
+           'msg'=>'数据获取成功',
+           'data'=>$result
         ]);
     }
 
