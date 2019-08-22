@@ -13,7 +13,7 @@ use think\Route;
 // 后台管理员登陆
 Route::resource('api/login','admin/Login');
 // 后台分类管理
-Route::resource('api/category','admin/Categorymodel');
+Route::resource('api/category','admin/Category');
 // 商品管理
 Route::resource('api/goods','admin/Goods');
 return [
