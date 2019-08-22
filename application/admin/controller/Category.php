@@ -147,7 +147,7 @@ class Category extends Controller
     public function delete($id)
     {
         // api/category/12
-        $data = Db::table('category')->where(['pid'=>$id])->select();
+        $data = model('Categorymodel')->deletes($id);
         if($data){
            return  json([
                'code'=>config('code.fail'),
