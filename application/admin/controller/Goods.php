@@ -21,15 +21,31 @@ class Goods extends Controller
      */
     public function index()
     {
-        try {
+//        try {
             $model = model('Goodsmodel');
-            $goods = $model->querys();
 
-            if ($goods) {
+            $data = $this->request->get();
+
+            if(isset($data['page'])&& !empty($data['page']) ){
+                $page = $data['page'];
+            }else{
+                $page = 1;
+            }
+            if(isset($data['limit'])&& !empty($data['limit']) ){
+                $limit = $data['limit'];
+            }else{
+                $limit = 3;
+            }
+            $goods = $model->querys($page,$limit);
+            $total = $goods->total();
+            $data = $goods->items();
+
+            if ($total) {
                 return json([
                     'code' => config('code.success'),
                     'msg' => '商品获取成功',
-                    'data' => $goods
+                    'data' => $data,
+                    'total'=>$total
                 ]);
             } else {
                 return json([
@@ -38,12 +54,12 @@ class Goods extends Controller
                     'data' => []
                 ]);
             }
-        }catch (Exception $exception){
-            return json([
-                'code' => config('code.fail'),
-                'msg' => '商品获取失败'
-            ]);
-        }
+//        }catch (Exception $exception){
+//            return json([
+//                'code' => config('code.fail'),
+//                'msg' => '商品获取失败'
+//            ]);
+//        }
     }
 
     /**

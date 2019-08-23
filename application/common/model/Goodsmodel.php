@@ -10,8 +10,11 @@ class Goodsmodel extends Model
 {
     protected  $table = 'goods';
     protected $autoWriteTimestamp=true;
-    function querys(){
-        return $this->order('cid','asc')->select();
+    function querys($page,$limit){
+        return $this->order('cid','asc')
+            ->paginate($limit,false,[
+                'page'=>$page
+            ]);
     }
     function queryone($data){
         return $this->where($data)->find();
