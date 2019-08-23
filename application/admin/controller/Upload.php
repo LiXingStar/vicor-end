@@ -5,7 +5,7 @@ namespace app\admin\controller;
 use think\Controller;
 use think\Request;
 
-class Goods extends Controller
+class Upload extends Controller
 {
     /**
      * 显示资源列表
@@ -36,19 +36,11 @@ class Goods extends Controller
     public function save(Request $request)
     {
         //
-        $data = $this->request->post();
-        $model = model('Goodsmodel');
-        $result = $model->inserts($data);
-        if ($result) {
-            return json([
-                'code' => config('code.success'),
-                'msg' => '商品添加成功'
-            ]);
-        } else {
-            return json([
-                'code' => config('code.fail'),
-                'msg' => '商品添加失败'
-            ]);
+
+        $file = request()->file('file');
+        $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
+        if($info){
+            echo DS.'uploads'.DS.$info->getSaveName();
         }
     }
 
@@ -94,6 +86,30 @@ class Goods extends Controller
      */
     public function delete($id)
     {
-        //
+        $data = $this->request->get('path');
+        // \uploads\20190823\56c8ff3352e07d888d739a3f2840c8e1.webp
+
+        $path =UPLOAD_PATH . $data;
+        if(file_exists($path)){
+            $result = unlink($path);
+            if($result){
+                return  json([
+                    'code'=>config('code.success'),
+                    'msg'=>'文件删除成功'
+                ])  ;
+            }else{
+                return  json([
+                    'code'=>config('code.fail'),
+                    'msg'=>'文件删除失败'
+                ])  ;
+            }
+
+        }else{
+           return  json([
+               'code'=>config('code.fail'),
+               'msg'=>'文件不存在'
+           ])  ;
+        }
+
     }
 }

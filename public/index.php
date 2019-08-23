@@ -17,7 +17,7 @@ if($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // [ 应用入口文件 ]
-
+define('UPLOAD_PATH',__DIR__);
 // 定义应用目录
 define('APP_PATH', __DIR__ . '/../application/');
 // 加载框架引导文件

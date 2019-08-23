@@ -16,6 +16,8 @@ Route::resource('api/login','admin/Login');
 Route::resource('api/category','admin/Category');
 // 商品管理
 Route::resource('api/goods','admin/Goods');
+// 图片上传
+Route::resource('api/upload','admin/Upload');
 return [
     '__pattern__' => [
         'name' => '\w+',
