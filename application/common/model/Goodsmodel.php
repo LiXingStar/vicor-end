@@ -10,8 +10,10 @@ class Goodsmodel extends Model
 {
     protected  $table = 'goods';
     protected $autoWriteTimestamp=true;
-    function querys($page,$limit){
-        return $this->order('cid','asc')
+    function querys($sarr,$page,$limit){
+        return $this
+            ->where($sarr)
+            ->order('cid','asc')
             ->paginate($limit,false,[
                 'page'=>$page
             ]);

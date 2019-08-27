@@ -22,38 +22,57 @@ class Goods extends Controller
     public function index()
     {
 //        try {
-            $model = model('Goodsmodel');
+        $model = model('Goodsmodel');
 
-            $data = $this->request->get();
+        $data = $this->request->get();
 
-            if(isset($data['page'])&& !empty($data['page']) ){
-                $page = $data['page'];
-            }else{
-                $page = 1;
-            }
-            if(isset($data['limit'])&& !empty($data['limit']) ){
-                $limit = $data['limit'];
-            }else{
-                $limit = 3;
-            }
-            $goods = $model->querys($page,$limit);
-            $total = $goods->total();
-            $data = $goods->items();
+        if (isset($data['page']) && !empty($data['page'])) {
+            $page = $data['page'];
+        } else {
+            $page = 1;
+        }
+        if (isset($data['limit']) && !empty($data['limit'])) {
+            $limit = $data['limit'];
+        } else {
+            $limit = 3;
+        }
 
-            if ($total) {
-                return json([
-                    'code' => config('code.success'),
-                    'msg' => '商品获取成功',
-                    'data' => $data,
-                    'total'=>$total
-                ]);
-            } else {
-                return json([
-                    'code' => config('code.success'),
-                    'msg' => '暂无商品',
-                    'data' => []
-                ]);
-            }
+        $sarr = [];
+
+        if (!empty($data['gname'])) {
+            $sarr['gname'] = ['like', '%' . $data['gname'] . '%'];
+        }
+        if (!empty($data['gename'])) {
+            $sarr['gename'] = ['like', '%' . $data['gename'] . '%'];
+        }
+        if (!empty($data['lowprice']) && !empty($data['highprice']) && $data['lowprice'] < $data['highprice']) {
+            $sarr['price'] = [
+                    ['>',$data['lowprice']],
+                    ['<',$data['highprice']]
+            ];
+        }
+
+
+        $goods = $model->querys($sarr,$page, $limit);
+
+//        echo $model->getLastSql();
+        $total = $goods->total();
+        $data = $goods->items();
+
+        if ($total) {
+            return json([
+                'code' => config('code.success'),
+                'msg' => '商品获取成功',
+                'data' => $data,
+                'total' => $total
+            ]);
+        } else {
+            return json([
+                'code' => config('code.success'),
+                'msg' => '暂无商品',
+                'data' => []
+            ]);
+        }
 //        }catch (Exception $exception){
 //            return json([
 //                'code' => config('code.fail'),
@@ -75,7 +94,7 @@ class Goods extends Controller
     /**
      * 保存新建的资源
      *
-     * @param  \think\Request  $request
+     * @param \think\Request $request
      * @return \think\Response
      */
     public function save(Request $request)
@@ -100,7 +119,7 @@ class Goods extends Controller
     /**
      * 显示指定的资源
      *
-     * @param  int  $id
+     * @param int $id
      * @return \think\Response
      */
     public function read($id)
@@ -111,7 +130,7 @@ class Goods extends Controller
     /**
      * 显示编辑资源表单页.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \think\Response
      */
     public function edit($id)
@@ -122,8 +141,8 @@ class Goods extends Controller
     /**
      * 保存更新的资源
      *
-     * @param  \think\Request  $request
-     * @param  int  $id
+     * @param \think\Request $request
+     * @param int $id
      * @return \think\Response
      */
     public function update(Request $request, $id)
@@ -134,7 +153,7 @@ class Goods extends Controller
     /**
      * 删除指定资源
      *
-     * @param  int  $id
+     * @param int $id
      * @return \think\Response
      */
     public function delete($id)

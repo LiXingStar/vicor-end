@@ -18,6 +18,7 @@ Route::resource('api/category','admin/Category');
 Route::resource('api/goods','admin/Goods');
 // 图片上传
 Route::resource('api/upload','admin/Upload');
+Route::resource('api/team','admin/Team');
 return [
     '__pattern__' => [
         'name' => '\w+',

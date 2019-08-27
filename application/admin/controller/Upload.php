@@ -76,6 +76,16 @@ class Upload extends Controller
     public function update(Request $request, $id)
     {
         //
+        $data = $this->request->put();
+        $srcs = $data['srcs'];
+        for($i = 0;$i<count($srcs);$i++){
+            $path =UPLOAD_PATH . $srcs[$i];
+            if(!file_exists($path)){
+                continue;
+            }
+            unlink($path);
+        }
+
     }
 
     /**
