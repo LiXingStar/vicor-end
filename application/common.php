@@ -41,3 +41,11 @@ function checkJWT(){
     }
 
 }
+
+function randomNames(){
+    $time = time();
+    $charts = ['q','w','e','r','t','y','u','i'];
+    shuffle($charts);
+    $str = join('',array_slice($charts,0,5));
+    return $str.'_'.$time;
+}

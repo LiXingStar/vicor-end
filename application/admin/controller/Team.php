@@ -18,13 +18,16 @@ class Team extends Controller
         //
         $result = Db::table('team')->alias('t')
             ->join('category c','t.cid=c.cid')
-            ->field('t.*,c.cname')->select();
+            ->field('t.*,c.cname')->paginate(3,false,[
+                'page'=>1
+            ]);
 
         if ($result) {
             return json([
                 'code' => config('code.success'),
                 'msg' => '团队成功添加成功',
-                'data'=>$result
+                'data'=>$result->items(),
+                'total'=>$result->total()
             ]);
         } else {
             return json([

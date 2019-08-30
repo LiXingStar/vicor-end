@@ -245,5 +245,7 @@ return [
         'success'=>200,
         'fail'=>404
     ],
-    'jwtkey'=>'wuif1904'
+    'jwtkey'=>'wuif1904',
+    // 用户注册登录是盐
+    'salt'=>'vicor'
 ];

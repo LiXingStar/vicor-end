@@ -51,6 +51,9 @@ class Goods extends Controller
                     ['<',$data['highprice']]
             ];
         }
+        if($data['typeid']){
+            $sarr['cid'] = $data['typeid'];
+        }
 
 
         $goods = $model->querys($sarr,$page, $limit);
@@ -124,7 +127,23 @@ class Goods extends Controller
      */
     public function read($id)
     {
-        //
+        $model = model('Goodsmodel');
+        $result = $model->queryone(['gid'=>$id]);
+
+        if($result){
+            return  json([
+               'code'=>config('code.success'),
+               'msg'=>"商品获取成功",
+               'data'=>$result
+            ]);
+        }else{
+            return  json([
+                'code'=>config('code.success'),
+                'msg'=>"暂无商品"
+            ]);
+        }
+
+
     }
 
     /**

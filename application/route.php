@@ -19,6 +19,11 @@ Route::resource('api/goods','admin/Goods');
 // 图片上传
 Route::resource('api/upload','admin/Upload');
 Route::resource('api/team','admin/Team');
+// 推荐商品
+Route::resource('api/recommendgoods','admin/Recommendgoods');
+// 用户注册
+Route::resource('api/userlogin','index/Login');
+
 return [
     '__pattern__' => [
         'name' => '\w+',

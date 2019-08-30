@@ -13,7 +13,7 @@ class Goodsmodel extends Model
     function querys($sarr,$page,$limit){
         return $this
             ->where($sarr)
-            ->order('cid','asc')
+            ->order('gid','asc')
             ->paginate($limit,false,[
                 'page'=>$page
             ]);
