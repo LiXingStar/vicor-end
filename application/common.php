@@ -34,12 +34,12 @@ function checkJWT(){
     $result = JWT::verify($token,config('jwtkey'));
     if(!$result){
         json([
-            'code'=>config('code.fail'),
+            'code'=>401,
             'msg'=>'token验证失败'
         ])->send();
         exit();
     }
-
+    request()->id = $result['id'];
 }
 
 function randomNames(){

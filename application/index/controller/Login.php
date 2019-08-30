@@ -4,6 +4,7 @@ namespace app\index\controller;
 
 use think\Controller;
 use think\Db;
+use think\JWT;
 use think\Request;
 
 class Login extends Controller
@@ -95,9 +96,11 @@ class Login extends Controller
         if($result){
             $pass = md5(crypt($data['password'],config('salt')));
             if($pass == $result['password']){
+                $token =  JWT::getToken(['id'=>$result['uid'],'uname'=>$result['uname']],config('jwtkey'));
                 return  json([
                     'code'=>config('code.success'),
-                    'msg'=>"登录成功"
+                    'msg'=>"登录成功",
+                    'token'=>$token
                 ]);
             }   else{
                 return  json([

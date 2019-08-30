@@ -23,6 +23,7 @@ Route::resource('api/team','admin/Team');
 Route::resource('api/recommendgoods','admin/Recommendgoods');
 // 用户注册
 Route::resource('api/userlogin','index/Login');
+Route::resource('api/shopcart','index/Shopcart');
 
 return [
     '__pattern__' => [
