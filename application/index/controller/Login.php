@@ -3,6 +3,7 @@
 namespace app\index\controller;
 
 use think\Controller;
+use think\Db;
 use think\Request;
 
 class Login extends Controller
@@ -89,7 +90,27 @@ class Login extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $this->request->put();
+        $result = Db::table('users')->where('phone',$data['phone'])->find();
+        if($result){
+            $pass = md5(crypt($data['password'],config('salt')));
+            if($pass == $result['password']){
+                return  json([
+                    'code'=>config('code.success'),
+                    'msg'=>"登录成功"
+                ]);
+            }   else{
+                return  json([
+                    'code'=>config('code.fail'),
+                    'msg'=>"手机号和密码不匹配"
+                ]);
+            }
+        }else{
+            return  json([
+                'code'=>config('code.fail'),
+                'msg'=>"该用户不存在，请先注册"
+            ]);
+        }
     }
 
     /**
