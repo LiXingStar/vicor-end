@@ -22,6 +22,29 @@ class Shopcart extends Controller
     public function index()
     {
         //
+        $uid = $this->request->id;
+
+        $cart = Db::table('cart')->where('uid',$uid)->find();
+        if($cart){
+            $goods = Db::table('cart_extra')->alias('c')
+                 ->field('c.num,c.gid,c.state,goods.gname,goods.gename,goods.gthumb,goods.gtype,goods.cid,goods.price')
+                 ->join('goods','c.gid=goods.gid')
+                ->where('uid',$uid)->select();
+
+            $cart['goods'] = $goods;
+
+            return  json([
+                'code'=>config('code.success'),
+                'msg'=>'购物获取成功',
+                'data'=>$cart
+            ]);
+        }else{
+            return  json([
+                'code'=>config('code.success'),
+                'msg'=>'购物为空'
+            ]);
+        }
+
     }
 
     /**
