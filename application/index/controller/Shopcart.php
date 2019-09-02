@@ -37,7 +37,7 @@ class Shopcart extends Controller
     /**
      * 保存新建的资源
      *
-     * @param  \think\Request  $request
+     * @param \think\Request $request
      * @return \think\Response
      */
     public function save(Request $request)
@@ -45,23 +45,60 @@ class Shopcart extends Controller
         $data = $this->request->post();
         $uid = $this->request->id;
 
-        $cart = Db::table('cart')->where('uid',$uid)->find();
+        $cart = Db::table('cart')->where('uid', $uid)->find();
         // 存在购物车  uid->cart表
 
-        if($cart){
+        if ($cart) {
             // 存在
-        }else{
+            // 当前商品添加购物车
+            // 存在
+            $goodsArr = ['gid' => $data['gid'], 'uid' => $uid];
+            $goods = Db::table('cart_extra')->where($goodsArr)->find();
+            Db::startTrans();
+            if ($goods) {
+                // 购物车信息 商品数量+1
+                $result = Db::table('cart_extra')->where(['uid' => $uid, 'gid' => $data['gid']])->setInc('num');
+            } else {
+                // 购物车信息 不存在 ：  追加 (cart_extra): gid,num,state,sid,uid --> 更新购物车(商品数量，总价)
+                $insertArr = ['gid' => $data['gid'], 'num' => 1, 'state' => 1, 'sid' => $cart['sid'], 'uid' => $uid];
+                $result = Db::table('cart_extra')->insert($insertArr);
+            }
+            // 购物车 数量+1  价格+
+            $totalResult = Db::table('cart')->where(['uid' => $uid])->setInc('total');
+            $priceResult = Db::table('cart')->where(['uid' => $uid])->setInc('price', $data['price']);
+            if ($result && $totalResult && $priceResult) {
+                Db::commit();
+                return json([
+                    'code' => config('code.success'),
+                    'msg' => '商品添加成功'
+                ]);
+            } else {
+                Db::rollback();
+                return json([
+                    'code' => config('code.fail'),
+                    'msg' => '商品添加失败'
+                ]);
+            }
+        } else {
             // 不存在 -> 初始化 cart (uid,total:1,price:) -> 添加商品 cart_extra(gid,num:1,state:1,sid:,uid)
             Db::startTrans();
-            $cartInfo = ['uid'=>$uid,'total'=>1,'price'=>$data['price']];
-             Db::table('cart')->insert($cartInfo);
+            $cartInfo = ['uid' => $uid, 'total' => 1, 'price' => $data['price']];
             $sid = Db::table('cart')->insertGetId($cartInfo);
-            $cartExtra = ['gid'=>$data['gid'],'num'=>1,'state'=>1,'uid'=>$uid,'sid'=>$sid];
+            $cartExtra = ['gid' => $data['gid'], 'num' => 1, 'state' => 1, 'uid' => $uid, 'sid' => $sid];
             $result = Db::table('cart_extra')->insert($cartExtra);
-            if($sid && $result){
+
+            if ($sid && $result) {
                 Db::commit();
-            }else{
+                return json([
+                    'code' => config('code.success'),
+                    'msg' => '商品添加成功'
+                ]);
+            } else {
                 Db::rollback();
+                return json([
+                    'code' => config('code.fail'),
+                    'msg' => '商品添加失败'
+                ]);
             }
         }
 
@@ -71,7 +108,7 @@ class Shopcart extends Controller
     /**
      * 显示指定的资源
      *
-     * @param  int  $id
+     * @param int $id
      * @return \think\Response
      */
     public function read($id)
@@ -82,7 +119,7 @@ class Shopcart extends Controller
     /**
      * 显示编辑资源表单页.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \think\Response
      */
     public function edit($id)
@@ -93,8 +130,8 @@ class Shopcart extends Controller
     /**
      * 保存更新的资源
      *
-     * @param  \think\Request  $request
-     * @param  int  $id
+     * @param \think\Request $request
+     * @param int $id
      * @return \think\Response
      */
     public function update(Request $request, $id)
@@ -105,7 +142,7 @@ class Shopcart extends Controller
     /**
      * 删除指定资源
      *
-     * @param  int  $id
+     * @param int $id
      * @return \think\Response
      */
     public function delete($id)
