@@ -159,7 +159,30 @@ class Shopcart extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // 更新商品信息  ---> 购物车信息
+
+        $uid = $this->request->id;
+        $data = $this->request->put();
+
+        Db::startTrans();
+        $goodsResult = Db::table('cart_extra')->where(['uid'=>$uid,'gid'=>$data['gid']])->setInc('num');
+
+        $cartTotalResult = Db::table('cart')->where(['uid'=>$uid])->setInc('total');
+        $cartPriceResult = Db::table('cart')->where(['uid'=>$uid])->setInc('price',$data['price']);
+
+        if($goodsResult && $cartTotalResult && $cartPriceResult){
+            Db::commit();
+            return  json([
+               'code'=>config('code.success'),
+               'msg'=>'购物车更新成功'
+            ]);
+        }else{
+            Db::rollback();
+            return  json([
+                'code'=>config('code.fail'),
+                'msg'=>'购物车更新失败'
+            ]);
+        }
     }
 
     /**
