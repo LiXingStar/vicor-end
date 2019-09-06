@@ -95,7 +95,31 @@ class Orders extends Controller
      */
     public function read($id)
     {
-        //
+        // 订单 -> 商品
+        $uid = $this->request->id;
+        $order = Db::table('orders')->where(['uid'=>$uid,'ordernum'=>$id])->find();
+
+        $goods = Db::table('orders_extra')->alias('o')
+               ->field('o.gid,o.num,goods.gname,goods.gename,goods.gthumb,goods.gtype,goods.price,goods.gstock')
+                ->join('goods','o.gid=goods.gid')
+            ->where(['ordernum'=>$id])
+            ->select();
+
+         $order['goods'] = $goods;
+
+         if($goods && $order){
+             return  json([
+                 'code'=>config('code.success'),
+                 'msg'=>'订单获取成功',
+                 'data'=>$order
+             ]);
+         }else{
+             return  json([
+                 'code'=>config('code.fail'),
+                 'msg'=>'订单获取失败'
+             ]);
+         }
+
     }
 
     /**
