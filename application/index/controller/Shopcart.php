@@ -136,7 +136,21 @@ class Shopcart extends Controller
      */
     public function read($id)
     {
-        //
+
+        $uid = $this->request->id;
+        $result = Db::table('cart')->field('total')->where(['uid'=>$uid])->find();
+        if($result){
+            return  json([
+                'code'=>config('code.success'),
+                'msg'=>'数据获取成功',
+                'data'=>$result['total']
+            ]);
+        }else{
+            return  json([
+                'code'=>config('code.fail'),
+                'msg'=>'暂无购物车'
+            ]);
+        }
     }
 
     /**
@@ -147,7 +161,7 @@ class Shopcart extends Controller
      */
     public function edit($id)
     {
-        //
+
     }
 
     /**
