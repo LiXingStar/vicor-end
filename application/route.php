@@ -25,6 +25,8 @@ Route::resource('api/recommendgoods','admin/Recommendgoods');
 Route::resource('api/userlogin','index/Login');
 Route::resource('api/shopcart','index/Shopcart');
 Route::resource('api/orders','index/Orders');
+Route::resource('api/my','index/My');
+Route::resource('api/collect','index/Collect');
 
 return [
     '__pattern__' => [
