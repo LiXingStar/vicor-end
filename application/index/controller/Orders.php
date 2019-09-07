@@ -21,7 +21,41 @@ class Orders extends Controller
      */
     public function index()
     {
-        //
+      $data = $this->request->get();
+      $uid = $this->request->id;
+      $sdata = ['uid'=>$uid];
+      if($data['state']){
+          $sdata['state'] = $data['state'];
+      }
+
+      $orders = Db::table('orders')->where($sdata)->select();
+      if(count($orders)){
+          for($i=0;$i<count($orders);$i++){
+              $ordernum = $orders[$i]['ordernum'];
+              $goods = Db::table('orders_extra')->alias('o')->join('goods','o.gid=goods.gid')
+                  ->where(['o.ordernum'=>$ordernum])
+                  ->field('o.gid,o.num,goods.gname,goods.gename,goods.price,goods.gtype,gthumb')
+                  ->order('gid','desc')
+                  ->limit(0,1)
+                  ->find();
+              if($goods){
+                  $orders[$i]['goods'] = $goods;
+              }
+          }
+          return  json([
+              'code'=>config('code.success'),
+              'msg'=>'订单获取成功',
+              'data'=>$orders
+          ]);
+      }else{
+          return  json([
+              'code'=>config('code.fail'),
+              'msg'=>'暂无订单'
+          ]);
+      }
+
+
+
     }
 
     /**
