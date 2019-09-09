@@ -49,3 +49,24 @@ function randomNames(){
     $str = join('',array_slice($charts,0,5));
     return $str.'_'.$time;
 }
+
+function orderStateText($state){
+    $text = '未付款';
+    switch ($state){
+        case 0:
+            $text = '未付款';
+            break;
+        case 1:
+            $text='待发货';
+            break;
+        case 2:
+            $text = '待收货';
+            break;
+        case 3:
+            $text='待评价';
+            break;
+        default:
+            $text ='';
+    }
+    return $text;
+}

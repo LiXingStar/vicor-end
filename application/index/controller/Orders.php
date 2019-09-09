@@ -40,6 +40,7 @@ class Orders extends Controller
                   ->find();
               if($goods){
                   $orders[$i]['goods'] = $goods;
+                  $orders[$i]['statetext'] = orderStateText($orders[$i]['state']);
               }
           }
           return  json([

@@ -19,6 +19,7 @@ Route::resource('api/goods','admin/Goods');
 // 图片上传
 Route::resource('api/upload','admin/Upload');
 Route::resource('api/team','admin/Team');
+Route::resource('api/aorders','admin/Orders');
 // 推荐商品
 Route::resource('api/recommendgoods','admin/Recommendgoods');
 // 用户注册
