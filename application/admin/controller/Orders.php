@@ -36,6 +36,7 @@ class Orders extends Controller
             $sdata['limit'] = config('paginate.list_rows');
         }*/
 
+
        $result =  Db::table('orders')->alias('o')
             ->join('users','o.uid=users.uid')
             ->field('o.*,users.uname')
@@ -47,12 +48,22 @@ class Orders extends Controller
        if($total  &&  count($orders)){
            for($i=0;$i<count($orders);$i++){
                $orders[$i]['statetext'] = orderStateText($orders[$i]['state']);
+
+               $ordersnum = $orders[$i]['ordernum'];
+
+               $goods = Db::table('orders_extra')->alias('o')
+                   ->join('goods','o.gid=goods.gid')
+                   ->field('o.gid,o.num,goods.gname,goods.price,goods.gthumb,goods.gtype')
+                   ->where('o.ordernum',$ordersnum)
+                   ->select();
+
+               $orders[$i]['goods'] = $goods;
            }
            return  json([
                'code'=>config('code.success'),
                'msg'=>'订单获取成功',
                'total'=>$total,
-               'data'=>$data
+               'data'=>$orders
            ]);
        }else{
            return  json([
